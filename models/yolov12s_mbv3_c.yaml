@@ -1,0 +1,33 @@
+# MBV3-C: deep replacement. Early C3k2 stages and later downsampling
+# convolutions are replaced. P4/P5 A2C2f attention is retained at narrower
+# channels, while the multiscale neck topology and Detect head stay intact.
+
+nc: 2
+depth_multiple: 1.0
+width_multiple: 1.0
+
+backbone:
+  - [-1, 1, Conv, [32, 3, 2]]
+  - [-1, 1, Conv, [64, 3, 2]]
+  - [-1, 1, MobileNetV3Stage, [64, 1, 1, 2.0, 3, true, HS]]
+  - [-1, 1, Conv, [128, 3, 2]]
+  - [-1, 1, MobileNetV3Stage, [128, 2, 1, 2.0, 5, true, HS]]
+  - [-1, 1, MobileNetV3Stage, [128, 1, 2, 2.0, 5, true, HS]]
+  - [-1, 2, A2C2f, [192, true, 4]]
+  - [-1, 1, MobileNetV3Stage, [192, 1, 2, 2.0, 5, true, HS]]
+  - [-1, 2, A2C2f, [320, true, 1]]
+
+head:
+  - [-1, 1, nn.Upsample, [null, 2, nearest]]
+  - [[-1, 6], 1, Concat, [1]]
+  - [-1, 1, A2C2f, [256, false, -1]]
+  - [-1, 1, nn.Upsample, [null, 2, nearest]]
+  - [[-1, 4], 1, Concat, [1]]
+  - [-1, 1, A2C2f, [128, false, -1]]
+  - [-1, 1, Conv, [128, 3, 2]]
+  - [[-1, 11], 1, Concat, [1]]
+  - [-1, 1, A2C2f, [256, false, -1]]
+  - [-1, 1, Conv, [256, 3, 2]]
+  - [[-1, 8], 1, Concat, [1]]
+  - [-1, 1, C3k2, [512, true]]
+  - [[14, 17, 20], 1, Detect, [nc]]

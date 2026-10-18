@@ -1,0 +1,8 @@
+path: ./data
+train: images/train
+val: images/val
+
+nc: 2
+names:
+  0: hat
+  1: person

@@ -1,0 +1,10 @@
+-r requirements.txt
+
+# CUDA 12.x deployment backends used by RTX 4060 / PyTorch cu128.
+# ORT 1.27+ PyPI wheels target CUDA 13. Keep the CUDA 12.8/cuDNN 9 build
+# aligned with this project's PyTorch cu128 environment.
+onnxruntime-gpu>=1.21.0,<1.27.0
+# TensorRT 11 uses ModelOpt to bake FP16/INT8 precision into the ONNX graph;
+# keeping it installed is harmless with the TensorRT 10 builder-flag path.
+tensorrt-cu12>=10.3.0,!=10.2.0
+nvidia-modelopt[onnx]>=0.44

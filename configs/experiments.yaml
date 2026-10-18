@@ -1,0 +1,45 @@
+# Fair-comparison settings for the E0-E4 structural ablation.
+# Stage 1 changes the model architecture only. Tune the selected winner later.
+common_train:
+  data: data/data.yaml
+  epochs: 80
+  imgsz: 640
+  batch: 16
+  workers: 8
+  optimizer: AdamW
+  lr0: 0.01
+  lrf: 0.01
+  warmup_epochs: 3
+  mosaic: 1.0
+  mixup: 0.1
+  close_mosaic: 10
+  cos_lr: true
+  patience: 20
+  seed: 0
+  deterministic: true
+  project: runs/ablation
+
+experiments:
+  E0:
+    name: e0_yolo12n
+    label: YOLOv12n
+    model: yolo12n.pt
+  E1:
+    name: e1_yolo12s
+    label: YOLOv12s
+    model: yolo12s.pt
+  E2:
+    name: e2_mbv3_a
+    label: YOLOv12s-MBV3-A
+    model: models/yolov12s_mbv3_a.yaml
+    pretrained: yolo12s.pt
+  E3:
+    name: e3_mbv3_b
+    label: YOLOv12s-MBV3-B
+    model: models/yolov12s_mbv3_b.yaml
+    pretrained: yolo12s.pt
+  E4:
+    name: e4_mbv3_c
+    label: YOLOv12s-MBV3-C
+    model: models/yolov12s_mbv3_c.yaml
+    pretrained: yolo12s.pt
